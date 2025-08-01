@@ -7,7 +7,6 @@ from plotly.subplots import make_subplots
 import time
 from datetime import datetime, timedelta
 
-# Page configuration
 st.set_page_config(
     page_title="Battery Management System",
     page_icon="🔋",
@@ -15,7 +14,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for modern styling and animations
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -160,7 +158,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state
 if 'cells_data' not in st.session_state:
     st.session_state.cells_data = {}
 if 'tasks_data' not in st.session_state:
@@ -196,8 +193,7 @@ def create_voltage_chart(cells_data):
     fig = go.Figure()
     
     for cell_key, data in cells_data.items():
-        # Simulate voltage over time
-        time_points = list(range(0, 61, 5))  # 0 to 60 seconds
+        time_points = list(range(0, 61, 5))  
         base_voltage = data['voltage']
         voltages = [base_voltage + random.uniform(-0.1, 0.1) for _ in time_points]
         
@@ -249,7 +245,6 @@ def create_temperature_gauge(temp):
     fig.update_layout(height=300)
     return fig
 
-# Main header
 st.markdown("""
 <div class="main-header">
     <h1>🔋 Battery Management System</h1>
@@ -257,11 +252,9 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Sidebar for configuration
 with st.sidebar:
     st.markdown("### ⚙️ Configuration Panel")
     
-    # Cell Configuration Section
     st.markdown("#### 🔋 Cell Configuration")
     
     num_cells = st.number_input(
@@ -272,7 +265,6 @@ with st.sidebar:
         help="Enter the number of battery cells to monitor"
     )
     
-    # Dynamic cell type selection
     cell_types = []
     for i in range(num_cells):
         cell_type = st.selectbox(
@@ -292,9 +284,7 @@ with st.sidebar:
         time.sleep(1)
         st.rerun()
 
-# Main content area
 if st.session_state.cells_data:
-    # Cell overview metrics
     col1, col2, col3, col4 = st.columns(4)
     
     total_voltage = sum(data['voltage'] for data in st.session_state.cells_data.values())
@@ -330,24 +320,20 @@ if st.session_state.cells_data:
             delta=f"{random.uniform(-1, 1):.1f}"
         )
     
-    # Voltage monitoring chart
     st.markdown("### 📈 Real-time Monitoring")
     voltage_chart = create_voltage_chart(st.session_state.cells_data)
     if voltage_chart:
         st.plotly_chart(voltage_chart, use_container_width=True)
     
-    # Cell details in expandable cards
     st.markdown("### 🔋 Cell Details")
     
     cols = st.columns(min(3, len(st.session_state.cells_data)))
     for idx, (cell_key, cell_data) in enumerate(st.session_state.cells_data.items()):
         with cols[idx % 3]:
             with st.expander(f"📱 {cell_key.replace('_', ' ').title()}", expanded=True):
-                # Temperature gauge
                 temp_gauge = create_temperature_gauge(cell_data['temp'])
                 st.plotly_chart(temp_gauge, use_container_width=True)
                 
-                # Cell metrics
                 col_a, col_b = st.columns(2)
                 with col_a:
                     st.metric("Voltage", f"{cell_data['voltage']:.2f} V")
@@ -359,14 +345,12 @@ if st.session_state.cells_data:
                     st.metric("Health", f"{cell_data['health']:.1f}%")
                     st.metric("Cycles", f"{cell_data['cycles']}")
                 
-                # Voltage range
                 st.progress(
                     (cell_data['voltage'] - cell_data['min_voltage']) / 
                     (cell_data['max_voltage'] - cell_data['min_voltage'])
                 )
                 st.caption(f"Range: {cell_data['min_voltage']}V - {cell_data['max_voltage']}V")
 
-# Task Management Section
 st.markdown("### 📋 Task Management")
 
 with st.expander("➕ Add New Task", expanded=False):
@@ -429,7 +413,6 @@ with st.expander("➕ Add New Task", expanded=False):
         time.sleep(1)
         st.rerun()
 
-# Display existing tasks
 if st.session_state.tasks_data:
     st.markdown("#### 📝 Current Tasks")
     
@@ -481,7 +464,6 @@ if st.session_state.tasks_data:
                         st.session_state.task_list.remove(task_data["task_type"])
                     st.rerun()
 
-# Data export section
 if st.session_state.cells_data or st.session_state.tasks_data:
     st.markdown("### 📊 Data Export")
     
@@ -509,7 +491,6 @@ if st.session_state.cells_data or st.session_state.tasks_data:
                     mime="text/csv"
                 )
 
-# Auto-refresh option
 with st.sidebar:
     st.markdown("---")
     st.markdown("### 🔄 Auto Refresh")
@@ -520,7 +501,6 @@ with st.sidebar:
         time.sleep(refresh_interval)
         st.rerun()
 
-# Footer
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #666; padding: 1rem;">
