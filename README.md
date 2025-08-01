@@ -81,3 +81,8 @@ You can export:
 * Task logs as CSV
 
 These options appear after initializing cells or creating tasks.
+
+---
+
+### Demo Link : 
+https://battery-management-ui-py-2b5wjykkdujhfqvcehcbh9.streamlit.app/
